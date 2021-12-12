@@ -37,15 +37,19 @@ d_plots <- proxy_data %>%
 
 
 map <- leaflet(proxies_df) %>% 
-  setView(lng = 116.84438, lat = -20.73488, zoom = 1) %>%
+  setView(lng = 116.84438, lat = -20.73488, zoom = 2) %>%
   addProviderTiles(providers$CartoDB.Positron) %>%
   addCircleMarkers(color = ~pal(archive), label = ~names,
-                   radius=6, stroke = FALSE, fillOpacity = 0.5,
+                   radius=9, stroke = FALSE, fillOpacity = 0.5,
                    popup = popupGraph(d_plots$plot, height=120)) %>% 
   addLegend(pal = pal, values = ~archive,
             position = 'bottomright', opacity = 1,
-            title = "Proxy type")
+            title = "Proxy type") %>% 
+  htmlwidgets::onRender(paste0("
+    function(el, x) {
+      $('head').append('<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no\" />');
+    }"))
 
 map
 
-saveWidget(map, file="phyda_proxies.html", title="PHYDA proxies map")
+saveWidget(map, file="index.html", title="PHYDA proxies map", selfcontained = TRUE)
